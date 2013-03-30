@@ -130,7 +130,7 @@ try:
 	pd = parseString(pd_xml)
 	personal_data = {
 		'versichertennummer': str(pd.getElementsByTagName('vsdp:Versicherten_ID')[0].childNodes[0].data),
-		'birthdate': datetime.strptime(pd.getElementsByTagName('vsdp:Geburtsdatum')[0].childNodes[0].data, '%Y%m%d').date(),
+		'birthdate': datetime.strptime(pd.getElementsByTagName('vsdp:Geburtsdatum')[0].childNodes[0].data, '%Y%m%d').date().__str__(),
 		'firstname': pd.getElementsByTagName('vsdp:Vorname')[0].childNodes[0].data,
 		'lastname': pd.getElementsByTagName('vsdp:Nachname')[0].childNodes[0].data,
 		'gender': pd.getElementsByTagName('vsdp:Geschlecht')[0].childNodes[0].data,
@@ -154,7 +154,7 @@ try:
 	versicherungs_data = {
 		'versicherungsnummer': versicherungsnummer,
 		'versicherungsname': versicherungsname,
-		'beginn': datetime.strptime(vd.getElementsByTagName('vsda:Beginn')[0].childNodes[0].data, '%Y%m%d').date()
+		'beginn': datetime.strptime(vd.getElementsByTagName('vsda:Beginn')[0].childNodes[0].data, '%Y%m%d').date().__str__()
 	}
 
 	print """
