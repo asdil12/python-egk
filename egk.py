@@ -49,8 +49,7 @@ try:
 		return data
 
 	def get_version(adpu):
-		data, sw1, sw2 = connection.transmit(adpu)
-		assert (sw1, sw2) == (0x90, 0x00)
+		data = run(adpu)
 		hdata = unpack_bcd(data)
 		version = "%i.%i.%i" % (
 			decode_bcd(hdata[0:3]),
@@ -62,9 +61,8 @@ try:
 	def get_file(offset, length):
 		data = []
 		pointer = offset
-		while (pointer - offset) < length:
-			readlen = pd_len - (pointer - offset)
-			readlen = pd_len if length < 0xFC else 0xFC
+		while len(data) < length:
+			readlen = length if length < 0xFC else 0xFC
 			data_chunk = run( ADPU_READ(pointer, readlen) )
 			pointer += readlen
 			data.extend(data_chunk)
@@ -101,7 +99,7 @@ try:
 
 	# read PersonalData size
 	data = run( ADPU_READ(0x00, 0x02) )
-	pd_len = data[0] * 16 * 16 + data[1]
+	pd_len = (data[0] << 8) + data[1]
 	pd_len -= 0x02 # pd_len includes own length
 
 	# read PersonalData
@@ -115,8 +113,8 @@ try:
 
 	# read VersicherungsDaten header
 	data = run( ADPU_READ(0x00, 0x08) )
-	vd_start = data[0] * 16 * 16 + data[1]
-	vd_end   = data[2] * 16 * 16 + data[3]
+	vd_start = (data[0] << 8) + data[1]
+	vd_end   = (data[2] << 8) + data[3]
 	vd_len   = vd_end - (vd_start - 1) # -1 because we count from 0 on
 
 	# read VersicherungsDaten
